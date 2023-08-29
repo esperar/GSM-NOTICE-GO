@@ -24,8 +24,8 @@ func main() {
 	e.POST("/api/signup", handler.SignUp)
 	e.POST("/api/signin", handler.SignIn)
 	e.GET("/api/getlist", test.MockData(), middleware.JWTWithConfig(middleware.JWTConfig{
-		SigningKey: []byte(os.Getenv("SECRET_KEY")),
-		TokenLookup: "cookie:access-token"
+		SigningKey:  []byte(os.Getenv("SECRET_KEY")),
+		TokenLookup: "cookie:access-token",
 	}))
 	e.Logger.Fatal(e.Start(":1323"))
 }
