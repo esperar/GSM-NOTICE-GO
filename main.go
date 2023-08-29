@@ -18,5 +18,6 @@ func main() {
 	e := echo.New()
 
 	e.POST("/api/signup", handler.SignUp)
+	e.POST("/api/signin", handler.SignIn)
 	e.Logger.Fatal(e.Start(":1323"))
 }
