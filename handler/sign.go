@@ -72,7 +72,9 @@ func SignIn(c echo.Context) error {
 	cookie.HttpOnly = true
 	cookie.Expires = time.Now().Add(time.Hour * 24)
 
-	return sendJson(http.StatusOK, "Login Success", c)
+	c.SetCookie(cookie)
+
+	return sendJson(http.StatusOK, "Login Success! accessToken = "+accessToken, c)
 }
 
 func sendJson(status int, message string, c echo.Context) error {
