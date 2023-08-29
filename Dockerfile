@@ -14,4 +14,4 @@ COPY ./ ./
 
 RUN go build
 
-CMD ["goboard"]
+CMD ["./main"]
