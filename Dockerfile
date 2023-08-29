@@ -12,6 +12,6 @@ EXPOSE 3070
 
 COPY ./ ./
 
-RUN go build
+RUN go build -o goboard
 
-CMD ["./main"]
+CMD ["./goboard"]
