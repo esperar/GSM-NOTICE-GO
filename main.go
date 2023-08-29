@@ -1,7 +1,22 @@
 package main
 
-import "fmt"
+import (
+	"github.com/joho/godotenv"
+	"github.com/labstack/echo/v4"
+	"goboard/handler"
+	"log"
+)
 
 func main() {
-	fmt.Println("Hello World!")
+
+	err := godotenv.Load(".env")
+
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	e := echo.New()
+
+	e.POST("/api/signup", handler.SignUp)
+	e.Logger.Fatal(e.Start(":1323"))
 }
