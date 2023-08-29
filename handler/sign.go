@@ -7,6 +7,7 @@ import (
 	"goboard/models"
 	_ "golang.org/x/crypto/ssh"
 	"net/http"
+	"time"
 )
 
 func SignUp(c echo.Context) error {
@@ -56,14 +57,22 @@ func SignIn(c echo.Context) error {
 
 	response := helper.CheckPasswordHash(user.Password, password)
 
-	var message string
 	if !response {
 		return echo.ErrUnauthorized
-	} else {
-		message = "Success"
 	}
 
-	return sendJson(http.StatusOK, message, c)
+	accessToken, err := helper.CreateJwt(user.Email)
+	if err != nil {
+		return echo.ErrInternalServerError
+	}
+
+	cookie := new(http.Cookie)
+	cookie.Name = "access-token"
+	cookie.Value = accessToken
+	cookie.HttpOnly = true
+	cookie.Expires = time.Now().Add(time.Hour * 24)
+
+	return sendJson(http.StatusOK, "Login Success", c)
 }
 
 func sendJson(status int, message string, c echo.Context) error {
