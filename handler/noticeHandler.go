@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func CreateNotice(c echo.Context) error {
+func CreateNotice(w http.ResponseWriter, r *http.Request, c echo.Context) error {
 
 	notice := new(models.Notice)
 
@@ -16,7 +16,15 @@ func CreateNotice(c echo.Context) error {
 		return helper.SendToJson(http.StatusBadRequest, "bad Request", c)
 	}
 
+	currentUserId, err := helper.GetCurrentUserId(w, r)
+
+	if err != nil {
+		return helper.SendToJson(http.StatusInternalServerError, "user not found", c)
+	}
+
 	db := database.Connect()
+
+	notice.CreatedBy = currentUserId
 
 	if err := db.Create(&notice); err.Error != nil {
 		return helper.SendToJson(http.StatusInternalServerError, "Failed Create Notice", c)
@@ -25,12 +33,12 @@ func CreateNotice(c echo.Context) error {
 	return helper.SendToJson(http.StatusCreated, "success", c)
 }
 
-func GetAllNotices(e echo.Context) error {
+func GetAllNotices(e echo.Context, w http.ResponseWriter) error {
 
 	db := database.Connect()
 
 	var notices []models.Notice
 	db.Find(&notices)
 
-	return helper.SendToJson()
+	return e.JSON(http.StatusOK, notices)
 }
