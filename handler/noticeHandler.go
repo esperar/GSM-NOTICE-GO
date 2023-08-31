@@ -4,7 +4,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"goboard/database"
 	"goboard/helper"
-	"goboard/models"
+	models "goboard/models"
 	"net/http"
 )
 
@@ -23,4 +23,14 @@ func CreateNotice(c echo.Context) error {
 	}
 
 	return helper.SendToJson(http.StatusCreated, "success", c)
+}
+
+func GetAllNotices(e echo.Context) error {
+
+	db := database.Connect()
+
+	var notices []models.Notice
+	db.Find(&notices)
+
+	return helper.SendToJson()
 }
