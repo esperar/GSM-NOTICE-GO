@@ -29,7 +29,11 @@ func Router() *echo.Echo {
 	}))
 
 	// notice
-	e.POST("/notice", handler.CreateNotice)
-
+	e.POST("/notice", func(c echo.Context) error {
+		return handler.CreateNotice(c.Response(), c.Request(), c)
+	})
+	e.GET("/notice", func(c echo.Context) error {
+		return handler.GetAllNotices(c, c.Response())
+	})
 	return e
 }
