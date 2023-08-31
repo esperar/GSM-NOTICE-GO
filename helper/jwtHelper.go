@@ -34,12 +34,12 @@ func VerifyToken(tokenString string) (string, error) {
 	})
 
 	if err != nil {
-		return 0, errors.New("invalid token")
+		return "", errors.New("invalid token")
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok || !token.Valid {
-		return 0, errors.New("invalid token")
+		return "", errors.New("invalid token")
 	}
 
 	email := claims["email"].(string)
