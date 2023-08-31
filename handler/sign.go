@@ -3,7 +3,7 @@ package handler
 import (
 	"github.com/labstack/echo/v4"
 	"goboard/database"
-	"goboard/helper"
+	helper "goboard/helper"
 	"goboard/models"
 	_ "golang.org/x/crypto/ssh"
 	"net/http"
@@ -14,28 +14,28 @@ func SignUp(c echo.Context) error {
 	user := new(models.User)
 
 	if err := c.Bind(user); err != nil {
-		return sendJson(http.StatusBadRequest, "bad Request", c)
+		return helper.SendToJson(http.StatusBadRequest, "bad Request", c)
 	}
 
 	db := database.Connect()
 	result := db.Find(&user, "email=?", user.Email)
 
 	if result.RowsAffected != 0 {
-		return sendJson(http.StatusBadRequest, "existing email", c)
+		return helper.SendToJson(http.StatusBadRequest, "existing email", c)
 	}
 
 	hashPassword, err := helper.HashPassword(user.Password)
 	if err != nil {
-		return sendJson(http.StatusInternalServerError, err.Error(), c)
+		return helper.SendToJson(http.StatusInternalServerError, err.Error(), c)
 	}
 
 	user.Password = hashPassword
 
 	if err := db.Create(&user); err.Error != nil {
-		return sendJson(http.StatusInternalServerError, "Failed SignUp", c)
+		return helper.SendToJson(http.StatusInternalServerError, "Failed SignUp", c)
 	}
 
-	return sendJson(http.StatusOK, "success", c)
+	return helper.SendToJson(http.StatusOK, "success", c)
 
 }
 
@@ -43,7 +43,7 @@ func SignIn(c echo.Context) error {
 	user := new(models.User)
 
 	if err := c.Bind(user); err != nil {
-		return sendJson(http.StatusBadRequest, "bad request", c)
+		return helper.SendToJson(http.StatusBadRequest, "bad request", c)
 	}
 
 	password := user.Password
@@ -74,11 +74,5 @@ func SignIn(c echo.Context) error {
 
 	c.SetCookie(cookie)
 
-	return sendJson(http.StatusOK, "Login Success! accessToken = "+accessToken, c)
-}
-
-func sendJson(status int, message string, c echo.Context) error {
-	return c.JSON(status, map[string]string{
-		"message": message,
-	})
+	return helper.SendToJson(http.StatusOK, "Login Success! accessToken = "+accessToken, c)
 }
