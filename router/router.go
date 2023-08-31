@@ -15,6 +15,7 @@ func Router() *echo.Echo {
 	e.Use(middleware.Recover())
 	e.Use(middleware.CORS())
 
+	// health check
 	e.GET("/healthy", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Health Check OK!!")
 	})
