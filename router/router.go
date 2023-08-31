@@ -19,12 +19,16 @@ func Router() *echo.Echo {
 		return c.String(http.StatusOK, "Health Check OK!!")
 	})
 
+	// auth
 	e.POST("/api/signup", handler.SignUp)
 	e.POST("/api/signin", handler.SignIn)
 	e.GET("/api/getlist", test.MockData(), middleware.JWTWithConfig(middleware.JWTConfig{
 		SigningKey:  []byte(os.Getenv("SECRET_KEY")),
 		TokenLookup: "cookie:access-token",
 	}))
+
+	// notice
+	e.POST("/notice", handler.CreateNotice)
 
 	return e
 }
