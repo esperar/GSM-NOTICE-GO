@@ -44,10 +44,10 @@ func GetAllNotices(e echo.Context, w http.ResponseWriter) error {
 	var noticeResults []result.NoticeResult
 
 	for _, notice := range notices {
-		noticeResult := result.NoticeResult {
-			Id: notice.Id,
-			Title: notice.Title,
-			CreatedBy: notice.CreatedBy
+		noticeResult := result.NoticeResult{
+			Id:        notice.Id,
+			Title:     notice.Title,
+			CreatedBy: notice.CreatedBy,
 		}
 		noticeResults = append(noticeResults, noticeResult)
 	}
