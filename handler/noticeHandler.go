@@ -3,6 +3,7 @@ package handler
 import (
 	"github.com/labstack/echo/v4"
 	"goboard/database"
+	"goboard/handler/result"
 	"goboard/helper"
 	models "goboard/models"
 	"net/http"
@@ -40,5 +41,17 @@ func GetAllNotices(e echo.Context, w http.ResponseWriter) error {
 	var notices []models.Notice
 	db.Find(&notices)
 
-	return e.JSON(http.StatusOK, notices)
+	var noticeResults []result.NoticeResult
+
+	for _, notice := range notices {
+		noticeResult := result.NoticeResult {
+			Id: notice.Id,
+			Title: notice.Title,
+			CreatedBy: notice.CreatedBy
+		}
+		noticeResults = append(noticeResults, noticeResult)
+	}
+
+	return e.JSON(http.StatusOK, noticeResults)
+
 }
